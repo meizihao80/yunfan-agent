@@ -6,6 +6,7 @@ import { MessageSquare, MessageCircle, ShieldCheck, AlertCircle, Clock, Upload, 
 export default function DashboardPage() {
   const [chunks, setChunks] = useState<number>(0);
   const [docs, setDocs] = useState(0);
+  const [s, setS] = useState<{ today: number; month: number; rate: number }>({ today: 0, month: 0, rate: 0 });
 
   useEffect(() => {
     fetch("/api/ingest")
@@ -14,13 +15,17 @@ export default function DashboardPage() {
         setChunks(d.totalChunks ?? 0);
         setDocs((d.sources ?? []).length);
       });
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => setS(d))
+      .catch(() => {});
   }, []);
 
   const cards = [
-    { label: "今日问答", value: "—", sub: "去对话页提问", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", href: "/" },
-    { label: "本月问答", value: "—", sub: "去对话页提问", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", href: "/" },
-    { label: "有依据率", value: "85%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", href: "/kb" },
-    { label: "无依据率", value: "15%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", href: "/kb" },
+    { label: "今日问答", value: s.today, sub: "去对话页提问", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", href: "/" },
+    { label: "本月问答", value: s.month, sub: "去对话页提问", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", href: "/" },
+    { label: "有依据率", value: s.rate + "%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", href: "/kb" },
+    { label: "无依据率", value: 100 - s.rate + "%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", href: "/kb" },
     { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50", href: "/" },
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];

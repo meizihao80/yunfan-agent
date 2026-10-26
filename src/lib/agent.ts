@@ -3,6 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, stepCountIs } from "ai";
 import { retrieve } from "./rag";
 import { buildAiTools } from "./tools";
+import { recordAnswer } from "./stats";
 
 const openai = createOpenAI({
   // 统一走智谱 OpenAI 兼容端点：对话 glm-4-flash（免费、支持工具调用）+ embedding-3
@@ -34,6 +35,7 @@ ${context || "（知识库暂无相关内容）"}
 
 ${sources}`;
 
+  recordAnswer(context.length > 10); // 有召回片段就算有依据
   return streamText({
     model: openai.chat("glm-4-flash"),
     system,
