@@ -27,7 +27,7 @@
 - 对话模型：智谱 `glm-4-flash`（免费、原生支持工具调用，OpenAI 兼容接口）
 - 向量 Embedding：智谱 `embedding-3`（与对话模型共用一个智谱 key）
 - 向量检索：轻量本地向量库（内存 + JSON 持久化，余弦相似度），零外部服务依赖
-- 文档解析：`.txt/.md` 直读并支持用户上传；PDF（pdf-parse）/ Word（mammoth）为预留扩展点
+- 文档解析：`.txt/.md` 直读，PDF 用 pdf-parse v2、Word(.docx) 用 mammoth 提取文本，均支持用户上传
 
 ## 四、目录结构
 

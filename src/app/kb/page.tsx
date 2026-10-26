@@ -84,10 +84,10 @@ export default function KbPage() {
       >
         <UploadCloud size={32} className="mb-2 text-blue-500 transition group-hover:scale-110" />
         <div className="text-sm font-medium text-slate-700">
-          {uploading ? "上传入库中…" : "点击上传你自己的制度文档（.md / .txt）"}
+          {uploading ? "解析入库中…" : "点击上传制度文档（.md / .txt / .pdf / .docx）"}
         </div>
-        <div className="mt-1 text-xs text-slate-400">上传后自动切片、向量化、即可被问答检索到</div>
-        <input ref={fileRef} type="file" accept=".md,.txt" className="hidden" onChange={onPickFile} />
+        <div className="mt-1 text-xs text-slate-400">上传后自动解析、切片、向量化，即可被问答检索到</div>
+        <input ref={fileRef} type="file" accept=".md,.txt,.pdf,.docx" className="hidden" onChange={onPickFile} />
       </div>
 
       <div className="glass rounded-3xl p-4 shadow">
@@ -125,7 +125,7 @@ export default function KbPage() {
           ))}
         </div>
         <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-400">
-          <ShieldCheck size={12} /> PDF / Word 解析为预留扩展点，可平滑接入 pdf-parse / mammoth
+          <ShieldCheck size={12} /> PDF 用 pdf-parse v2 提取文本，Word(.docx) 用 mammoth 提取，均已接入
         </div>
       </div>
     </div>

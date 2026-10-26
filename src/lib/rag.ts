@@ -24,14 +24,28 @@ function splitText(text: string, chunkSize = 800, overlap = 120): string[] {
   return out.filter((s) => s.trim().length > 20);
 }
 
-async function extractText(file: string): Promise<string> {
-  const ext = path.extname(file).toLowerCase();
-  const buf = fs.readFileSync(file);
-  // 样例知识库以 Markdown / 纯文本为准（最稳）。
-  // PDF(.pdf) / Word(.docx) 解析为预留扩展点，可接 pdf-parse v2 / mammoth。
+// 从 buffer 解析文本：支持 .md/.txt/.pdf/.docx
+async function extractBuffer(fileName: string, buf: Buffer): Promise<string> {
+  const ext = path.extname(fileName).toLowerCase();
   if (ext === ".txt" || ext === ".md") return buf.toString("utf-8");
-  console.warn(`[ingest] 暂不解析 ${ext} 文件：${path.basename(file)}`);
+  if (ext === ".pdf") {
+    const { PDFParse } = await import("pdf-parse");
+    const parser = new PDFParse({ data: new Uint8Array(buf) });
+    const r = await parser.getText();
+    return r.text;
+  }
+  if (ext === ".docx") {
+    const mammoth = (await import("mammoth")).default;
+    const r = await mammoth.extractRawText({ buffer: buf });
+    return r.value;
+  }
+  console.warn(`[ingest] 暂不解析 ${ext} 文件：${fileName}`);
   return "";
+}
+
+async function extractText(file: string): Promise<string> {
+  const buf = fs.readFileSync(file);
+  return extractBuffer(file, buf);
 }
 
 // 把 sample_docs 目录下所有文档切片入库
@@ -39,7 +53,7 @@ export async function ingestSampleDocs(): Promise<{ files: number; chunks: numbe
   if (!fs.existsSync(DOCS_DIR)) return { files: 0, chunks: 0 };
   const files = fs
     .readdirSync(DOCS_DIR)
-    .filter((f) => /\.(txt|md)$/i.test(f));
+    .filter((f) => /\.(txt|md|pdf|docx)$/i.test(f));
   let total = 0;
   for (const f of files) {
     const full = path.join(DOCS_DIR, f);
@@ -53,6 +67,15 @@ export async function ingestSampleDocs(): Promise<{ files: number; chunks: numbe
 
 // 用户上传的自定义制度文档切片入库
 export async function ingestUploadedText(source: string, text: string): Promise<number> {
+  const pieces = splitText(text);
+  await addChunks(pieces.map((text) => ({ text, source })));
+  return pieces.length;
+}
+
+// 用户上传文件（.md/.txt/.pdf/.docx）→ 解析 → 切片入库
+export async function ingestUploadedFile(source: string, buf: Buffer): Promise<number> {
+  const text = await extractBuffer(source, buf);
+  if (!text.trim()) return 0;
   const pieces = splitText(text);
   await addChunks(pieces.map((text) => ({ text, source })));
   return pieces.length;
