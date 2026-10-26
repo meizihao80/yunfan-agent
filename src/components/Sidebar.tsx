@@ -35,7 +35,7 @@ export default function Sidebar() {
           <BookOpen size={18} />
         </div>
         <div>
-          <div className="text-sm font-bold text-slate-800">知枢 Agent</div>
+          <div className="text-sm font-bold text-slate-800">云帆 Agent</div>
           <div className="text-[10px] text-slate-400">企业文档智能客服</div>
         </div>
       </div>
@@ -94,3 +94,4 @@ export default function Sidebar() {
     </aside>
   );
 }
+

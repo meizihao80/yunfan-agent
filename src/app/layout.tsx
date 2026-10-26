@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "知枢 Agent · 企业文档智能客服",
+  title: "云帆 Agent · 企业文档智能客服",
   description: "企业文档智能客服：私有文档 RAG + Agent + MCP 工具链",
 };
 
@@ -33,3 +33,4 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
+

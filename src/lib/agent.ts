@@ -19,7 +19,7 @@ export async function runAgent(userQuery: string) {
     .map((d, i) => `[参考${i + 1}] 来源：${d.source}`)
     .join("\n");
 
-  const system = `你是【知枢Agent】，面向企业的文档智能客服助手。
+  const system = `你是【云帆Agent】，面向企业的文档智能客服助手。
 你不仅能基于企业私有文档回答制度类问题，也能基于已有知识为企业经营、流程优化、未来规划类问题提供分析与建议。
 
 ## 工作规则（任务规划）
@@ -45,3 +45,4 @@ ${sources}`;
     temperature: 0.2,
   });
 }
+
