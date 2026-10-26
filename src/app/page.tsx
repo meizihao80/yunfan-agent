@@ -47,6 +47,7 @@ export default function Page() {
   const [recording, setRecording] = useState(false);
   const [importing, setImporting] = useState(false);
   const [chunkCount, setChunkCount] = useState<number | null>(null);
+  const [docNames, setDocNames] = useState<string[]>([]);
   const recRef = useRef<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +56,10 @@ export default function Page() {
   useEffect(() => {
     fetch("/api/ingest")
       .then((r) => r.json())
-      .then((d) => setChunkCount(d.totalChunks ?? 0))
+      .then((d) => {
+        setChunkCount(d.totalChunks ?? 0);
+        setDocNames(d.sources ?? []);
+      })
       .catch(() => {});
   }, []);
 
@@ -245,6 +249,19 @@ export default function Page() {
               <button onClick={() => reload()} className="ml-3 underline">点击重试</button>
             </div>
           )}
+        </div>
+
+        {/* 知识库来源面板 */}
+        <div className="glass mt-3 rounded-2xl p-3 shadow-sm">
+          <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-600">
+            <span>知识库来源（{docNames.length}）</span>
+            <span className="text-[10px] font-normal text-emerald-600">✓ 已索引</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {docNames.map((n) => (
+              <span key={n} className="rounded-lg bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">📄 {n}</span>
+            ))}
+          </div>
         </div>
 
         {/* 输入区 */}

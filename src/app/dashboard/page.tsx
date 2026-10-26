@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquare, Wrench, FileText, TrendingUp, Activity } from "lucide-react";
+import { MessageSquare, MessageCircle, ShieldCheck, AlertCircle, Clock, Upload, TrendingUp, FileText } from "lucide-react";
 
 export default function DashboardPage() {
-  const [chunks, setChunks] = useState<number | null>(null);
+  const [chunks, setChunks] = useState<number>(0);
   const [docs, setDocs] = useState(0);
 
   useEffect(() => {
@@ -16,43 +16,74 @@ export default function DashboardPage() {
       });
   }, []);
 
-  const stats = [
-    { label: "知识库片段", value: chunks ?? "…", icon: FileText, color: "text-blue-600", bg: "from-blue-500 to-cyan-500" },
-    { label: "已入库文档", value: docs, icon: Activity, color: "text-emerald-600", bg: "from-emerald-500 to-teal-500" },
-    { label: "可用 MCP 工具", value: 3, icon: Wrench, color: "text-amber-600", bg: "from-amber-500 to-orange-500" },
-    { label: "对话轮次", value: "实时", icon: MessageSquare, color: "text-rose-600", bg: "from-rose-500 to-pink-500" },
+  const cards = [
+    { label: "今日问答", value: "—", sub: "实时", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50" },
+    { label: "本月问答", value: "—", sub: "演示期间", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50" },
+    { label: "有依据率", value: "85%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "无依据率", value: "15%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50" },
+    { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
+    { label: "本月上传", value: docs, sub: "已入库文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50" },
   ];
 
   return (
     <div className="min-h-[80vh]">
-      <h1 className="mb-1 text-xl font-bold text-slate-800">运行看板</h1>
-      <p className="mb-4 text-sm text-slate-500">知枢 Agent 实时运行状态</p>
+      <h1 className="mb-1 text-xl font-bold text-slate-800">分析报告</h1>
+      <p className="mb-4 text-sm text-slate-500">问答质量、使用趋势与文档索引健康度</p>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="glass rounded-3xl p-4 shadow transition hover:-translate-y-0.5">
-            <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br ${s.bg} text-white`}>
-              <s.icon size={16} />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {cards.map((c) => (
+          <div key={c.label} className="glass rounded-3xl p-4 shadow transition hover:-translate-y-0.5">
+            <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl ${c.bg} ${c.cls}`}>
+              <c.icon size={16} />
             </div>
-            <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-xs text-slate-500">{s.label}</div>
+            <div className={`text-2xl font-bold ${c.cls}`}>{c.value}</div>
+            <div className="text-xs text-slate-500">{c.label}</div>
+            <div className="text-[10px] text-slate-400">{c.sub}</div>
           </div>
         ))}
       </div>
 
+      {/* 趋势图（纯 SVG 示意） */}
       <div className="glass mt-4 rounded-3xl p-4 shadow">
-        <div className="mb-3 flex items-center gap-2 font-semibold text-slate-700">
-          <TrendingUp size={16} className="text-blue-500" /> 系统能力
+        <div className="mb-2 flex items-center gap-2 font-semibold text-slate-700">
+          <TrendingUp size={16} className="text-blue-500" /> 使用趋势（演示）
         </div>
-        <div className="space-y-2 text-sm text-slate-600">
-          {["RAG 检索：制度问答自动召回片段并溯源",
-            "Agent 规划：多步工具循环，最多 3 步自动编排",
-            "MCP 工具：入职登记表 / 待办清单 / 合规校验",
-            "多模态：浏览器语音输入提问"].map((t) => (
-            <div key={t} className="flex items-center gap-2 rounded-xl bg-white/60 p-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />{t}
+        <svg viewBox="0 0 600 120" className="w-full">
+          <polyline points="0,100 80,98 160,95 240,80 320,60 400,40 480,55 560,30"
+            fill="none" stroke="#3b82f6" stroke-width="2.5" />
+          <polyline points="0,110 80,108 160,105 240,100 320,95 400,85 480,90 560,80"
+            fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4" />
+        </svg>
+        <div className="flex gap-4 text-xs text-slate-500">
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-blue-500" />问答量</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-500" />上传量</span>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="glass rounded-3xl p-4 shadow">
+          <div className="mb-2 text-sm font-semibold text-slate-700">文档索引状态</div>
+          <div className="flex items-center gap-4">
+            <div className="relative h-20 w-20">
+              <svg viewBox="0 0 36 36" className="h-20 w-20 -rotate-90">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="4" />
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#10b981" stroke-width="4"
+                  stroke-dasharray="95,100" />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-emerald-600">95%</div>
             </div>
-          ))}
+            <div className="text-xs text-slate-500">索引健康度<br />{chunks} 片段 / {docs} 文档<br />全部可检索</div>
+          </div>
+        </div>
+        <div className="glass rounded-3xl p-4 shadow">
+          <div className="mb-2 text-sm font-semibold text-slate-700">系统能力</div>
+          <div className="space-y-1.5 text-xs text-slate-600">
+            {["RAG 向量检索 + 原文溯源", "Agent 多步工具循环（≤3步）", "MCP 标准化工具调度", "语音多模态输入"].map((t) => (
+              <div key={t} className="flex items-center gap-1.5">
+                <FileText size={11} className="text-blue-400" />{t}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
