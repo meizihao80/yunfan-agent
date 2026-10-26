@@ -6,7 +6,8 @@ import { MessageSquare, MessageCircle, ShieldCheck, AlertCircle, Clock, Upload, 
 export default function DashboardPage() {
   const [chunks, setChunks] = useState<number>(0);
   const [docs, setDocs] = useState(0);
-  const [s, setS] = useState<{ today: number; month: number; rate: number }>({ today: 0, month: 0, rate: 0 });
+  const [s, setS] = useState<{ today: number; month: number; rate: number; recent: any[] }>({ today: 0, month: 0, rate: 0, recent: [] });
+  const [showRec, setShowRec] = useState(false);
 
   useEffect(() => {
     fetch("/api/ingest")
@@ -22,11 +23,11 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { label: "今日问答", value: s.today, sub: "去对话页提问", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", href: "/" },
-    { label: "本月问答", value: s.month, sub: "去对话页提问", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", href: "/" },
-    { label: "有依据率", value: s.rate + "%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", href: "/kb" },
-    { label: "无依据率", value: 100 - s.rate + "%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", href: "/kb" },
-    { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50", href: "/" },
+    { label: "今日问答", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50" },
+    { label: "本月问答", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50" },
+    { label: "有依据率", value: s.rate + "%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "无依据率", value: 100 - s.rate + "%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50" },
+    { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
 
@@ -37,16 +38,37 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {cards.map((c) => (
-          <a key={c.label} href={c.href} className="glass block rounded-3xl p-4 shadow transition hover:-translate-y-0.5">
+          <button
+            key={c.label}
+            onClick={() => setShowRec((v) => !v)}
+            className="glass block rounded-3xl p-4 text-left shadow transition hover:-translate-y-0.5"
+          >
             <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl ${c.bg} ${c.cls}`}>
               <c.icon size={16} />
             </div>
             <div className={`text-2xl font-bold ${c.cls}`}>{c.value}</div>
             <div className="text-xs text-slate-500">{c.label}</div>
             <div className="text-[10px] text-slate-400">{c.sub}</div>
-          </a>
+          </button>
         ))}
       </div>
+
+      {showRec && (
+        <div className="glass mt-4 rounded-3xl p-4 shadow">
+          <div className="mb-2 text-sm font-semibold text-slate-700">最近问答记录（{s.recent.length}）</div>
+          <div className="max-h-64 space-y-1.5 overflow-y-auto">
+            {s.recent.length === 0 && <div className="text-xs text-slate-400">还没有记录，去对话页问个问题吧</div>}
+            {s.recent.map((r, i) => (
+              <div key={i} className="flex items-center justify-between rounded-xl bg-white/60 px-3 py-1.5 text-xs">
+                <span className="text-slate-700">💬 {r.q}</span>
+                <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
+                  {r.hasSource ? "有据" : "无据"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 趋势图（纯 SVG 示意） */}
       <div className="glass mt-4 rounded-3xl p-4 shadow">

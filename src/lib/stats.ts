@@ -5,7 +5,7 @@ import path from "path";
 const DATA_DIR = path.join(process.cwd(), "data");
 const FILE = path.join(DATA_DIR, "stats.json");
 
-export type StatRec = { ts: number; hasSource: boolean };
+export type StatRec = { ts: number; hasSource: boolean; q: string };
 
 export function loadStats(): StatRec[] {
   try {
@@ -15,10 +15,9 @@ export function loadStats(): StatRec[] {
   }
 }
 
-export function recordAnswer(hasSource: boolean) {
+export function recordAnswer(hasSource: boolean, q = "") {
   const all = loadStats();
-  all.push({ ts: Date.now(), hasSource });
-  // 只保留最近 60 天，自然清空
+  all.push({ ts: Date.now(), hasSource, q: q.slice(0, 80) });
   const cutoff = Date.now() - 60 * 24 * 3600 * 1000;
   const kept = all.filter((r) => r.ts > cutoff);
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -34,5 +33,6 @@ export function getStats() {
   const month = all.filter((r) => r.ts >= startOfMonth).length;
   const src = all.filter((r) => r.hasSource).length;
   const rate = all.length ? Math.round((src / all.length) * 100) : 0;
-  return { today, month, rate, total: all.length };
+  const recent = [...all].reverse().slice(0, 20);
+  return { today, month, rate, total: all.length, recent };
 }

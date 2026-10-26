@@ -35,7 +35,7 @@ ${context || "（知识库暂无相关内容）"}
 
 ${sources}`;
 
-  recordAnswer(context.length > 10); // 有召回片段就算有依据
+  recordAnswer(context.length > 10, userQuery);
   return streamText({
     model: openai.chat("glm-4-flash"),
     system,
