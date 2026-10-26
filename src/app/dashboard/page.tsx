@@ -107,15 +107,12 @@ export default function DashboardPage() {
                       <span className="text-slate-700">💬 {r.q || "（空）"}</span>
                     </label>
                   ) : (
-                    <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex flex-1 items-center justify-between text-left">
+                    <a href={"/?demo=" + encodeURIComponent(r.q)} className="flex flex-1 items-center justify-between">
                       <span className="text-slate-700">💬 {r.q || "（空）"}</span>
-                      <span className="flex items-center gap-1">
-                        <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
-                          {r.hasSource ? "有据" : "无据"}
-                        </span>
-                        <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>
+                      <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
+                        {r.hasSource ? "有据" : "无据"} →
                       </span>
-                    </button>
+                    </a>
                   )}
                 </div>
                 {openIdx === i && (
