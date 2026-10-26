@@ -8,6 +8,7 @@ export default function DashboardPage() {
   const [docs, setDocs] = useState(0);
   const [s, setS] = useState<{ today: number; month: number; rate: number; recent: any[] }>({ today: 0, month: 0, rate: 0, recent: [] });
   const [showRec, setShowRec] = useState(false);
+  const [recTitle, setRecTitle] = useState("今日问答记录");
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [picked, setPicked] = useState<Set<number>>(new Set());
@@ -43,7 +44,7 @@ export default function DashboardPage() {
         {cards.map((c) => (
           <button
             key={c.label}
-            onClick={() => setShowRec((v) => !v)}
+            onClick={() => { setShowRec(true); setRecTitle(c.label + "记录"); }}
             className="glass block rounded-3xl p-4 text-left shadow transition hover:-translate-y-0.5"
           >
             <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl ${c.bg} ${c.cls}`}>
@@ -59,7 +60,7 @@ export default function DashboardPage() {
       {showRec && (
         <div className="glass mt-4 rounded-3xl p-4 shadow">
           <div className="mb-2 flex items-center justify-between">
-            <div className="text-sm font-semibold text-slate-700">今日问答记录（{s.recent.length}）</div>
+            <div className="text-sm font-semibold text-slate-700">{recTitle}（{s.recent.length}）</div>
             {!selectMode ? (
               <button onClick={() => setSelectMode(true)} className="rounded-lg bg-red-50 px-2 py-1 text-xs text-red-600 hover:bg-red-100">删除记录</button>
             ) : (
