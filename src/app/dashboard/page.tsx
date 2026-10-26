@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const [s, setS] = useState<{ today: number; month: number; rate: number; recent: any[] }>({ today: 0, month: 0, rate: 0, recent: [] });
   const [showRec, setShowRec] = useState(false);
   const [recTitle, setRecTitle] = useState("今日问答记录");
+  const [recFilter, setRecFilter] = useState<"today" | "month">("today");
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [picked, setPicked] = useState<Set<number>>(new Set());
@@ -27,13 +28,20 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { label: "今日问答", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50" },
-    { label: "本月问答", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50" },
+    { label: "今日问答", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", filter: "today" },
+    { label: "本月问答", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", filter: "month" },
     { label: "有依据率", value: s.rate + "%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50" },
     { label: "无依据率", value: 100 - s.rate + "%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50" },
     { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
+
+  const now = Date.now();
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+  const filtered = s.recent.filter((r) =>
+    recFilter === "today" ? r.ts >= todayStart.getTime() : r.ts >= monthStart.getTime()
+  );
 
   return (
     <div className="min-h-[80vh]">
@@ -44,7 +52,7 @@ export default function DashboardPage() {
         {cards.map((c) => (
           <button
             key={c.label}
-            onClick={() => { setShowRec(true); setRecTitle(c.label + "记录"); }}
+            onClick={() => { setShowRec(true); setRecTitle(c.label + "记录"); setRecFilter(c.filter ?? "today"); }}
             className="glass block rounded-3xl p-4 text-left shadow transition hover:-translate-y-0.5"
           >
             <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl ${c.bg} ${c.cls}`}>
@@ -60,15 +68,15 @@ export default function DashboardPage() {
       {showRec && (
         <div className="glass mt-4 rounded-3xl p-4 shadow">
           <div className="mb-2 flex items-center justify-between">
-            <div className="text-sm font-semibold text-slate-700">{recTitle}（{s.recent.length}）</div>
+            <div className="text-sm font-semibold text-slate-700">{recTitle}（{filtered.length}）</div>
             {!selectMode ? (
               <button onClick={() => setSelectMode(true)} className="rounded-lg bg-red-50 px-2 py-1 text-xs text-red-600 hover:bg-red-100">删除记录</button>
             ) : (
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    if (picked.size === s.recent.length) setPicked(new Set());
-                    else setPicked(new Set(s.recent.map((_, i) => i)));
+                    if (picked.size === filtered.length) setPicked(new Set());
+                    else setPicked(new Set(filtered.map((_, i) => i)));
                   }}
                   className="rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-600"
                 >
@@ -95,7 +103,8 @@ export default function DashboardPage() {
           </div>
           <div className="max-h-64 space-y-1.5 overflow-y-auto">
             {s.recent.length === 0 && <div className="text-xs text-slate-400">还没有记录，去对话页问个问题吧</div>}
-            {s.recent.map((r, i) => (
+            {filtered.length === 0 && <div className="text-xs text-slate-400">暂无记录</div>}
+            {filtered.map((r, i) => (
               <div key={i} className="rounded-xl bg-white/60 px-3 py-1.5 text-xs">
                 <div className="flex items-center justify-between">
                   {selectMode ? (
