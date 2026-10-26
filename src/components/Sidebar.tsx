@@ -27,7 +27,7 @@ export default function Sidebar() {
         </div>
         <div>
           <div className="text-sm font-bold text-slate-800">知枢 Agent</div>
-          <div className="text-[10px] text-slate-400">企业文档流程助手</div>
+          <div className="text-[10px] text-slate-400">企业文档智能客服</div>
         </div>
       </div>
 

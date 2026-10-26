@@ -165,9 +165,9 @@ export default function Page() {
           {messages.length === 0 && (
             <div className="mt-6">
               <div className="mb-4 text-center">
-                <h2 className="text-xl font-bold text-slate-800">你好，行政人事同学 👋</h2>
+                <h2 className="text-xl font-bold text-slate-800">你好，企业同事 👋</h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  制度问答、生成表单、列待办，直接说或点下面的快捷问题
+                  制度问答、方案建议、生成表单，直接说或点下面的快捷问题
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">

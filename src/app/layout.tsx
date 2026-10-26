@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "知枢 Agent · 企业文档智能流程助手",
-  description: "面向中小企业行政人事的私有文档 RAG + Agent + MCP 工具链",
+  title: "知枢 Agent · 企业文档智能客服",
+  description: "企业文档智能客服：私有文档 RAG + Agent + MCP 工具链",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
