@@ -50,9 +50,9 @@ export default function DashboardPage() {
         </div>
         <svg viewBox="0 0 600 120" className="w-full">
           <polyline points="0,100 80,98 160,95 240,80 320,60 400,40 480,55 560,30"
-            fill="none" stroke="#3b82f6" stroke-width="2.5" />
+            fill="none" stroke="#3b82f6" strokeWidth="2.5" />
           <polyline points="0,110 80,108 160,105 240,100 320,95 400,85 480,90 560,80"
-            fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4" />
+            fill="none" stroke="#10b981" strokeWidth="2.5" strokeDasharray="4" />
         </svg>
         <div className="flex gap-4 text-xs text-slate-500">
           <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-blue-500" />问答量</span>
@@ -66,9 +66,9 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20">
               <svg viewBox="0 0 36 36" className="h-20 w-20 -rotate-90">
-                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="4" />
-                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#10b981" stroke-width="4"
-                  stroke-dasharray="95,100" />
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" strokeWidth="4" />
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#10b981" strokeWidth="4"
+                  strokeDasharray="95,100" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-emerald-600">95%</div>
             </div>
