@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Building2,
   ClipboardList,
+  Plus,
 } from "lucide-react";
 
 type Part = {
@@ -39,7 +40,7 @@ const QUICK = [
 ];
 
 export default function Page() {
-  const { messages, sendMessage, status, error, reload } = useChat({
+  const { messages, sendMessage, status, error, reload, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/agent" }),
   });
 
@@ -147,6 +148,12 @@ export default function Page() {
               <ShieldCheck size={12} /> RAG 溯源
             </span>
           </div>
+          <button
+            onClick={() => setMessages([])}
+            className="flex items-center gap-1.5 rounded-xl bg-white/70 px-3 py-2 text-sm text-slate-700 transition hover:scale-105 hover:bg-white"
+          >
+            <Plus size={15} /> 新对话
+          </button>
           <button
             onClick={handleImport}
             disabled={importing}
