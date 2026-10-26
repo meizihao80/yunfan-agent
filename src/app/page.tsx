@@ -68,10 +68,21 @@ export default function Page() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
-  // 从工具广场点“试用”跳过来时，自动带问题发问
+  // 从工具广场/历史记录点过来时，自动带问题发问
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("demo");
     if (q && !busy) sendMessage({ text: q });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 同页切换历史记录时重新触发
+  useEffect(() => {
+    const onPop = () => {
+      const q = new URLSearchParams(window.location.search).get("demo");
+      if (q) { setMessages([]); setTimeout(() => sendMessage({ text: q }), 100); }
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
