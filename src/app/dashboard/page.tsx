@@ -17,12 +17,12 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { label: "今日问答", value: "—", sub: "实时", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50" },
-    { label: "本月问答", value: "—", sub: "演示期间", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50" },
-    { label: "有依据率", value: "85%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "无依据率", value: "15%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50" },
-    { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
-    { label: "本月上传", value: docs, sub: "已入库文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50" },
+    { label: "今日问答", value: "—", sub: "去对话页提问", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", href: "/" },
+    { label: "本月问答", value: "—", sub: "去对话页提问", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", href: "/" },
+    { label: "有依据率", value: "85%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", href: "/kb" },
+    { label: "无依据率", value: "15%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", href: "/kb" },
+    { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50", href: "/" },
+    { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
 
   return (
@@ -32,14 +32,14 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {cards.map((c) => (
-          <div key={c.label} className="glass rounded-3xl p-4 shadow transition hover:-translate-y-0.5">
+          <a key={c.label} href={c.href} className="glass block rounded-3xl p-4 shadow transition hover:-translate-y-0.5">
             <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl ${c.bg} ${c.cls}`}>
               <c.icon size={16} />
             </div>
             <div className={`text-2xl font-bold ${c.cls}`}>{c.value}</div>
             <div className="text-xs text-slate-500">{c.label}</div>
             <div className="text-[10px] text-slate-400">{c.sub}</div>
-          </div>
+          </a>
         ))}
       </div>
 
