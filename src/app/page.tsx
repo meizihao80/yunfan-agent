@@ -251,19 +251,6 @@ export default function Page() {
           )}
         </div>
 
-        {/* 知识库来源面板 */}
-        <div className="glass mt-3 rounded-2xl p-3 shadow-sm">
-          <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-600">
-            <span>知识库来源（{docNames.length}）</span>
-            <span className="text-[10px] font-normal text-emerald-600">✓ 已索引</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {docNames.map((d) => (
-              <span key={d.source} className="rounded-lg bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">📄 {d.source} · {d.count}片段</span>
-            ))}
-          </div>
-        </div>
-
         {/* 输入区 */}
         <form
           onSubmit={(e) => {
