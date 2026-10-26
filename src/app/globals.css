@@ -68,3 +68,19 @@ html, body {
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.6);
 }
+
+/* 渐变标题 */
+.grad-text {
+  background: linear-gradient(120deg, #2563eb, #0891b2, #059669);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 卡片悬浮微光 */
+.glass {
+  transition: box-shadow .3s ease, transform .3s ease;
+}
+.glass:hover {
+  box-shadow: 0 12px 32px -12px rgba(59,130,246,0.25);
+}

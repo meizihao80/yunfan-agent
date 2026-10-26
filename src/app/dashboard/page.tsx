@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[80vh]">
-      <h1 className="mb-1 text-xl font-bold text-slate-800">分析报告</h1>
+      <h1 className="grad-text mb-1 text-xl font-bold">分析报告</h1>
       <p className="mb-4 text-sm text-slate-500">问答质量、使用趋势与文档索引健康度</p>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
