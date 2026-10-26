@@ -36,7 +36,6 @@ export default function DashboardPage() {
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
 
-  const now = Date.now();
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
   const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
   const filtered = s.recent.filter((r) =>
