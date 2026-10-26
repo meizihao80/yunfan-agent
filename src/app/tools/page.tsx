@@ -1,6 +1,7 @@
 "use client";
 
-import { Wrench, UserPlus, ListChecks, ShieldCheck, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Wrench, UserPlus, ListChecks, ShieldCheck, ArrowRight, Play } from "lucide-react";
 
 const TOOLS = [
   {
@@ -9,6 +10,7 @@ const TOOLS = [
     desc: "根据公司人事制度，生成员工入职登记表文本",
     params: ["staff_name: 员工姓名", "dept: 所属部门", "post: 岗位"],
     color: "from-blue-500 to-cyan-500",
+    demo: "给张三，技术部，工程师生成入职登记表",
   },
   {
     name: "generate_todo_list",
@@ -16,6 +18,7 @@ const TOOLS = [
     desc: "按流程类型（入职/离职/转正）生成人事待办清单",
     params: ["flow_type: 入职 / 离职 / 转正"],
     color: "from-emerald-500 to-teal-500",
+    demo: "帮我列一份入职流程的待办清单",
   },
   {
     name: "check_rule",
@@ -23,10 +26,15 @@ const TOOLS = [
     desc: "对待校验的人事内容做合规检查，提示对照制度复核",
     params: ["content: 待校验内容"],
     color: "from-amber-500 to-orange-500",
+    demo: "帮我校验一下：新员工入职当天就可以签无固定期限合同",
   },
 ];
 
 export default function ToolsPage() {
+  const router = useRouter();
+  function tryTool(q: string) {
+    router.push("/?demo=" + encodeURIComponent(q));
+  }
   return (
     <div className="min-h-[80vh]">
       <h1 className="mb-1 text-xl font-bold text-slate-800">MCP 工具广场</h1>
@@ -36,9 +44,10 @@ export default function ToolsPage() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {TOOLS.map((t) => (
-          <div
+          <button
             key={t.name}
-            className="group glass rounded-3xl p-4 shadow transition hover:-translate-y-1 hover:shadow-xl"
+            onClick={() => tryTool(t.demo)}
+            className="group glass w-full rounded-3xl p-4 text-left shadow transition hover:-translate-y-1 hover:shadow-xl"
           >
             <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${t.color} text-white shadow-md transition group-hover:scale-110`}>
               <t.icon size={20} />
@@ -51,7 +60,10 @@ export default function ToolsPage() {
                 <div key={p} className="text-[11px] font-mono text-slate-500">· {p}</div>
               ))}
             </div>
-          </div>
+            <div className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600">
+              <Play size={12} /> 点此试用
+            </div>
+          </button>
         ))}
       </div>
 

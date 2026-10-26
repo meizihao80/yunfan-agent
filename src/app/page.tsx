@@ -63,6 +63,13 @@ export default function Page() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
+  // 从工具广场点“试用”跳过来时，自动带问题发问
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("demo");
+    if (q && !busy) sendMessage({ text: q });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function handleImport() {
     setImporting(true);
     try {
