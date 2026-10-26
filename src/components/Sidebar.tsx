@@ -67,13 +67,13 @@ export default function Sidebar() {
           <div className="mb-1 px-1 text-[10px] text-slate-400">最近对话</div>
           <div className="max-h-40 space-y-0.5 overflow-y-auto">
             {hist.map((h, i) => (
-              <Link
+              <a
                 key={i}
                 href={"/?demo=" + encodeURIComponent(h.q)}
                 className="block truncate rounded-lg px-2 py-1.5 text-xs text-slate-600 hover:bg-white/70"
               >
                 💬 {h.q || "（空）"}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
