@@ -59,7 +59,7 @@ export default function DashboardPage() {
       {showRec && (
         <div className="glass mt-4 rounded-3xl p-4 shadow">
           <div className="mb-2 flex items-center justify-between">
-            <div className="text-sm font-semibold text-slate-700">最近问答记录（{s.recent.length}）</div>
+            <div className="text-sm font-semibold text-slate-700">问答记录（{s.recent.length}）</div>
             {!selectMode ? (
               <button onClick={() => setSelectMode(true)} className="rounded-lg bg-red-50 px-2 py-1 text-xs text-red-600 hover:bg-red-100">删除记录</button>
             ) : (
