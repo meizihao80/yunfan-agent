@@ -59,12 +59,16 @@ export default function DashboardPage() {
           <div className="max-h-64 space-y-1.5 overflow-y-auto">
             {s.recent.length === 0 && <div className="text-xs text-slate-400">还没有记录，去对话页问个问题吧</div>}
             {s.recent.map((r, i) => (
-              <div key={i} className="flex items-center justify-between rounded-xl bg-white/60 px-3 py-1.5 text-xs">
+              <a
+                key={i}
+                href={"/?demo=" + encodeURIComponent(r.q)}
+                className="flex items-center justify-between rounded-xl bg-white/60 px-3 py-1.5 text-xs transition hover:bg-blue-50"
+              >
                 <span className="text-slate-700">💬 {r.q}</span>
                 <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
-                  {r.hasSource ? "有据" : "无据"}
+                  {r.hasSource ? "有据" : "无据"} →
                 </span>
-              </div>
+              </a>
             ))}
           </div>
         </div>
