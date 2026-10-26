@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   MessagesSquare,
   Database,
@@ -19,6 +20,13 @@ const NAV = [
 
 export default function Sidebar() {
   const path = usePathname();
+  const [hist, setHist] = useState<{ q: string }[]>([]);
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => setHist((d.recent ?? []).slice(0, 8)))
+      .catch(() => {});
+  }, [path]);
   return (
     <aside className="glass z-20 flex w-60 shrink-0 flex-col gap-1 rounded-3xl p-4 shadow-lg shadow-blue-100/40">
       <div className="mb-4 flex items-center gap-2 px-1">
@@ -53,6 +61,23 @@ export default function Sidebar() {
           </Link>
         );
       })}
+
+      {path === "/" && hist.length > 0 && (
+        <div className="mt-3 border-t border-slate-200 pt-2">
+          <div className="mb-1 px-1 text-[10px] text-slate-400">最近对话</div>
+          <div className="max-h-40 space-y-0.5 overflow-y-auto">
+            {hist.map((h, i) => (
+              <Link
+                key={i}
+                href={"/?demo=" + encodeURIComponent(h.q)}
+                className="block truncate rounded-lg px-2 py-1.5 text-xs text-slate-600 hover:bg-white/70"
+              >
+                💬 {h.q || "（空）"}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-auto rounded-2xl bg-white/60 p-3 text-[10px] leading-relaxed text-slate-500">
         传智杯 · B 组<br />RAG + Agent + MCP 工具链
