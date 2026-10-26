@@ -5,7 +5,7 @@ import path from "path";
 const DATA_DIR = path.join(process.cwd(), "data");
 const FILE = path.join(DATA_DIR, "stats.json");
 
-export type StatRec = { ts: number; hasSource: boolean; q: string };
+export type StatRec = { ts: number; hasSource: boolean; q: string; a?: string };
 
 export function loadStats(): StatRec[] {
   try {
@@ -17,11 +17,19 @@ export function loadStats(): StatRec[] {
 
 export function recordAnswer(hasSource: boolean, q = "") {
   const all = loadStats();
-  all.push({ ts: Date.now(), hasSource, q: q.slice(0, 80) });
+  all.push({ ts: Date.now(), hasSource, q });
   const cutoff = Date.now() - 60 * 24 * 3600 * 1000;
   const kept = all.filter((r) => r.ts > cutoff);
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.writeFileSync(FILE, JSON.stringify(kept));
+  return kept.length - 1;
+}
+
+export function updateAnswer(answer: string) {
+  const all = loadStats();
+  if (all.length) all[all.length - 1].a = answer.slice(0, 500);
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(FILE, JSON.stringify(all));
 }
 
 export function getStats() {
