@@ -120,22 +120,13 @@ export default function KbPage() {
           <div className="flex items-center gap-2 font-semibold text-slate-700">
             <Database size={16} className="text-blue-500" /> 文档清单
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={clearAll}
-              disabled={busy}
-              className="flex items-center gap-1.5 rounded-xl bg-red-50 px-3 py-1.5 text-xs text-red-600 transition hover:scale-105 hover:bg-red-100 disabled:opacity-50"
-            >
-              <Trash2 size={13} /> 清空知识库
-            </button>
-            <button
-              onClick={reingest}
-              disabled={busy}
-              className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-1.5 text-xs text-white transition hover:scale-105 disabled:opacity-50"
-            >
-              <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> 重建内置索引
-            </button>
-          </div>
+          <button
+            onClick={reingest}
+            disabled={busy}
+            className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-1.5 text-xs text-white transition hover:scale-105 disabled:opacity-50"
+          >
+            <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> 重建内置索引
+          </button>
         </div>
         <div className="space-y-2">
           {DOCS.map((d) => (
