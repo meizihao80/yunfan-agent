@@ -50,7 +50,7 @@ export default function DashboardPage() {
         </div>
         <svg viewBox="0 0 600 120" className="w-full">
           <polyline points="0,100 80,98 160,95 240,80 320,60 400,40 480,55 560,30"
-            fill="none" stroke="#3b82f6" strokeWidth="2.5" />
+            fill="none" stroke="#3b82f6" strokeWidth="2.5" className="chart-line" />
           <polyline points="0,110 80,108 160,105 240,100 320,95 400,85 480,90 560,80"
             fill="none" stroke="#10b981" strokeWidth="2.5" strokeDasharray="4" />
         </svg>

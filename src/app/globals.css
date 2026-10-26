@@ -84,3 +84,13 @@ html, body {
 .glass:hover {
   box-shadow: 0 12px 32px -12px rgba(59,130,246,0.25);
 }
+
+/* 折线图生长动画 */
+@keyframes drawLine {
+  from { stroke-dashoffset: 600; }
+  to   { stroke-dashoffset: 0; }
+}
+.chart-line {
+  stroke-dasharray: 600;
+  animation: drawLine 1.6s ease-out forwards;
+}
