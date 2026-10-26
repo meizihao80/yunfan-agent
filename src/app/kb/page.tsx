@@ -1,48 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Database, FileText, RefreshCw, CheckCircle2, ShieldCheck, UploadCloud, FileUp, Trash2 } from "lucide-react";
-
-const DOCS = [
-  { name: "01-员工入职管理制度.md", desc: "入职流程、材料、试用期、合同期限" },
-  { name: "02-员工离职管理制度.md", desc: "离职申请、交接、权限回收、薪资结算" },
-  { name: "03-转正与考勤管理制度.md", desc: "转正流程、考勤、请假、绩效评价" },
-];
+import { Database, FileText, RefreshCw, ShieldCheck, UploadCloud, FileUp, Trash2 } from "lucide-react";
 
 export default function KbPage() {
   const [chunks, setChunks] = useState<number | null>(null);
+  const [sources, setSources] = useState<{ source: string; count: number }[]>([]);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [extra, setExtra] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function load() {
     const r = await fetch("/api/ingest");
     const d = await r.json();
     setChunks(d.totalChunks ?? 0);
+    setSources(d.sources ?? []);
   }
   useEffect(() => { load(); }, []);
 
   async function reingest() {
     setBusy(true);
     try {
-      const r = await fetch("/api/ingest", { method: "POST" });
-      const d = await r.json();
-      setChunks(d.totalChunks ?? 0);
-      alert(`已重新入库：共 ${d.totalChunks ?? 0} 片段`);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function clearAll() {
-    if (!confirm("确定清空整个知识库？")) return;
-    setBusy(true);
-    try {
-      await fetch("/api/ingest", { method: "DELETE" });
-      setChunks(0);
-      setExtra([]);
-      alert("已清空");
+      await fetch("/api/ingest", { method: "POST" });
+      await load();
     } finally {
       setBusy(false);
     }
@@ -54,7 +34,7 @@ export default function KbPage() {
       const r = await fetch(`/api/ingest?source=${encodeURIComponent(name)}`, { method: "DELETE" });
       const d = await r.json();
       setChunks(d.totalChunks);
-      setExtra((prev) => prev.filter((x) => x !== name));
+      await load();
     } finally {
       setBusy(false);
     }
@@ -71,8 +51,8 @@ export default function KbPage() {
       const d = await r.json();
       if (d.ok) {
         setChunks(d.totalChunks);
-        setExtra((prev) => [f.name, ...prev]);
-        alert(`上传成功：${f.name} 已切成 ${d.chunks} 个片段入库`);
+        await load();
+        alert(`上传成功：${f.name} 切成 ${d.chunks} 片段`);
       } else {
         alert(d.error || "上传失败");
       }
@@ -93,7 +73,7 @@ export default function KbPage() {
           <div className="text-xs text-slate-500">向量片段总数</div>
         </div>
         <div className="glass flex-1 rounded-2xl p-4 text-center shadow">
-          <div className="text-2xl font-bold text-emerald-600">{DOCS.length + extra.length}</div>
+          <div className="text-2xl font-bold text-emerald-600">{sources.length}</div>
           <div className="text-xs text-slate-500">已入库文档</div>
         </div>
         <div className="glass flex-1 rounded-2xl p-4 text-center shadow">
@@ -102,7 +82,6 @@ export default function KbPage() {
         </div>
       </div>
 
-      {/* 真·上传入口 */}
       <div
         onClick={() => fileRef.current?.click()}
         className="group mb-4 flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-blue-300 bg-white/50 p-8 text-center transition hover:border-blue-500 hover:bg-blue-50/60"
@@ -129,29 +108,23 @@ export default function KbPage() {
           </button>
         </div>
         <div className="space-y-2">
-          {DOCS.map((d) => (
-            <div key={d.name} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/70 p-3 transition hover:border-blue-200 hover:shadow-md">
-              <FileText size={18} className="shrink-0 text-blue-500" />
+          {sources.length === 0 && (
+            <div className="py-6 text-center text-sm text-slate-400">知识库为空，请上传制度文档</div>
+          )}
+          {sources.map((s) => (
+            <div key={s.source} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/70 p-3 transition hover:border-blue-200 hover:shadow-md">
+              {s.source.endsWith(".pdf") || s.source.endsWith(".docx") ? (
+                <FileUp size={18} className="shrink-0 text-emerald-600" />
+              ) : (
+                <FileText size={18} className="shrink-0 text-blue-500" />
+              )}
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium text-slate-800">{d.name}</div>
-                <div className="text-xs text-slate-500">{d.desc}</div>
+                <div className="truncate text-sm font-medium text-slate-800">{s.source}</div>
+                <div className="text-xs text-slate-500">{s.count} 个片段</div>
               </div>
               <button
-                onClick={() => removeDoc(d.name)}
+                onClick={() => removeDoc(s.source)}
                 className="rounded-lg p-1.5 text-red-400 transition hover:bg-red-50 hover:text-red-600"
-                title="删除该文档"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ))}
-          {extra.map((n) => (
-            <div key={n} className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3">
-              <FileUp size={18} className="shrink-0 text-emerald-600" />
-              <div className="flex-1 text-sm font-medium text-slate-800">{n}</div>
-              <button
-                onClick={() => removeDoc(n)}
-                className="rounded-lg p-1.5 text-red-500 transition hover:bg-red-100"
                 title="删除该文档"
               >
                 <Trash2 size={14} />

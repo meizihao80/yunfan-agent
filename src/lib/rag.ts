@@ -1,9 +1,9 @@
 // RAG：文档解析 → 切片 → 入库 → 检索（带溯源）
 import fs from "node:fs";
 import path from "node:path";
-import { addChunks, similaritySearch, countChunks, clearAll, deleteBySource, Chunk } from "./vectorStore";
+import { addChunks, similaritySearch, countChunks, clearAll, deleteBySource, listSources, Chunk } from "./vectorStore";
 
-export { countChunks, clearAll, deleteBySource };
+export { countChunks, clearAll, deleteBySource, listSources };
 
 const DOCS_DIR = path.join(process.cwd(), "sample_docs");
 

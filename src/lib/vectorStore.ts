@@ -39,6 +39,14 @@ export async function countChunks(): Promise<number> {
   return (await loadChunks()).length;
 }
 
+// 列出所有来源文件名及各自片段数
+export async function listSources(): Promise<{ source: string; count: number }[]> {
+  const all = await loadChunks();
+  const map = new Map<string, number>();
+  for (const c of all) map.set(c.source, (map.get(c.source) ?? 0) + 1);
+  return [...map.entries()].map(([source, count]) => ({ source, count }));
+}
+
 // 清空整个知识库
 export async function clearAll() {
   cache = [];
