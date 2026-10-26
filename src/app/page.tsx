@@ -47,7 +47,7 @@ export default function Page() {
   const [recording, setRecording] = useState(false);
   const [importing, setImporting] = useState(false);
   const [chunkCount, setChunkCount] = useState<number | null>(null);
-  const [docNames, setDocNames] = useState<string[]>([]);
+  const [docNames, setDocNames] = useState<{ source: string; count: number }[]>([]);
   const recRef = useRef<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -258,8 +258,8 @@ export default function Page() {
             <span className="text-[10px] font-normal text-emerald-600">✓ 已索引</span>
           </div>
           <div className="flex flex-wrap gap-1.5">
-            {docNames.map((n) => (
-              <span key={n} className="rounded-lg bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">📄 {n}</span>
+            {docNames.map((d) => (
+              <span key={d.source} className="rounded-lg bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">📄 {d.source} · {d.count}片段</span>
             ))}
           </div>
         </div>
