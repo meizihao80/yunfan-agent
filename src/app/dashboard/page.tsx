@@ -8,6 +8,7 @@ export default function DashboardPage() {
   const [docs, setDocs] = useState(0);
   const [s, setS] = useState<{ today: number; month: number; rate: number; recent: any[] }>({ today: 0, month: 0, rate: 0, recent: [] });
   const [showRec, setShowRec] = useState(false);
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/ingest")
@@ -60,13 +61,16 @@ export default function DashboardPage() {
             {s.recent.length === 0 && <div className="text-xs text-slate-400">还没有记录，去对话页问个问题吧</div>}
             {s.recent.map((r, i) => (
               <div key={i} className="rounded-xl bg-white/60 px-3 py-1.5 text-xs">
-                <div className="flex items-center justify-between">
+                <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex w-full items-center justify-between text-left">
                   <span className="text-slate-700">💬 {r.q}</span>
-                  <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
-                    {r.hasSource ? "有据" : "无据"}
+                  <span className="flex items-center gap-1">
+                    <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
+                      {r.hasSource ? "有据" : "无据"}
+                    </span>
+                    {r.a && <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>}
                   </span>
-                </div>
-                {r.a && <div className="mt-1 whitespace-pre-wrap rounded-lg bg-blue-50/60 p-2 text-[11px] text-slate-600">{r.a}</div>}
+                </button>
+                {openIdx === i && r.a && <div className="mt-1.5 whitespace-pre-wrap rounded-lg bg-blue-50/60 p-2 text-[11px] text-slate-600">{r.a}</div>}
               </div>
             ))}
           </div>
