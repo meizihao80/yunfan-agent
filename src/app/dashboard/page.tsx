@@ -10,6 +10,7 @@ export default function DashboardPage() {
   const [showRec, setShowRec] = useState(false);
   const [recTitle, setRecTitle] = useState("今日问答记录");
   const [recFilter, setRecFilter] = useState<"today" | "month">("today");
+  const [cutoff, setCutoff] = useState(0);
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [picked, setPicked] = useState<Set<number>>(new Set());
@@ -36,11 +37,7 @@ export default function DashboardPage() {
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
 
-  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
-  const filtered = s.recent.filter((r) =>
-    recFilter === "today" ? r.ts >= todayStart.getTime() : r.ts >= monthStart.getTime()
-  );
+  const filtered = s.recent.filter((r) => r.ts >= cutoff);
 
   return (
     <div className="min-h-[80vh]">
@@ -51,7 +48,13 @@ export default function DashboardPage() {
         {cards.map((c) => (
           <button
             key={c.label}
-            onClick={() => { setShowRec(true); setRecTitle(c.label + "记录"); setRecFilter(c.filter ?? "today"); }}
+            onClick={() => {
+              setShowRec(true); setRecTitle(c.label + "记录"); setRecFilter(c.filter ?? "today");
+              const d = new Date();
+              if (c.filter === "month") { d.setDate(1); d.setHours(0,0,0,0); }
+              else { d.setHours(0,0,0,0); }
+              setCutoff(d.getTime());
+            }}
             className="glass block rounded-3xl p-4 text-left shadow transition hover:-translate-y-0.5"
           >
             <div className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl ${c.bg} ${c.cls}`}>
