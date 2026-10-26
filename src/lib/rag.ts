@@ -72,10 +72,11 @@ export async function ingestUploadedText(source: string, text: string): Promise<
   return pieces.length;
 }
 
-// 用户上传文件（.md/.txt/.pdf/.docx）→ 解析 → 切片入库
+// 用户上传文件（.md/.txt/.pdf/.docx）→ 解析 → 切片入库（同名先替换旧片段）
 export async function ingestUploadedFile(source: string, buf: Buffer): Promise<number> {
   const text = await extractBuffer(source, buf);
   if (!text.trim()) return 0;
+  await deleteBySource(source); // 同名文件先删旧片段，避免重复叠加
   const pieces = splitText(text);
   await addChunks(pieces.map((text) => ({ text, source })));
   return pieces.length;
