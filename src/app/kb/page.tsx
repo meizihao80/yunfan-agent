@@ -107,7 +107,7 @@ export default function KbPage() {
             <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> 重建内置索引
           </button>
         </div>
-        <div className="space-y-2">
+        <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
           {sources.length === 0 && (
             <div className="py-6 text-center text-sm text-slate-400">知识库为空，请上传制度文档</div>
           )}
