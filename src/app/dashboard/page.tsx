@@ -26,8 +26,8 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { label: "今日问答记录", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50" },
-    { label: "本月问答记录", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50" },
+    { label: "今日问答", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50" },
+    { label: "本月问答", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50" },
     { label: "有依据率", value: s.rate + "%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50" },
     { label: "无依据率", value: 100 - s.rate + "%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50" },
     { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
@@ -59,7 +59,7 @@ export default function DashboardPage() {
       {showRec && (
         <div className="glass mt-4 rounded-3xl p-4 shadow">
           <div className="mb-2 flex items-center justify-between">
-            <div className="text-sm font-semibold text-slate-700">问答记录（{s.recent.length}）</div>
+            <div className="text-sm font-semibold text-slate-700">今日问答记录（{s.recent.length}）</div>
             {!selectMode ? (
               <button onClick={() => setSelectMode(true)} className="rounded-lg bg-red-50 px-2 py-1 text-xs text-red-600 hover:bg-red-100">删除记录</button>
             ) : (
