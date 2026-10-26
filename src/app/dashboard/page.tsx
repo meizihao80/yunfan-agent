@@ -56,35 +56,35 @@ export default function DashboardPage() {
 
       {showRec && (
         <div className="glass mt-4 rounded-3xl p-4 shadow">
-          <div className="mb-2 flex items-center justify-between">
-            <div className="text-sm font-semibold text-slate-700">最近问答记录（{s.recent.length}）</div>
-            <button
-              onClick={async () => {
-                if (!confirm("确定清空所有问答记录？")) return;
-                await fetch("/api/stats/clear", { method: "POST" });
-                setS({ today: 0, month: 0, rate: 0, recent: [] });
-              }}
-              className="rounded-lg bg-red-50 px-2 py-1 text-xs text-red-600 hover:bg-red-100"
-            >
-              清空记录
-            </button>
-          </div>
+          <div className="mb-2 text-sm font-semibold text-slate-700">最近问答记录（{s.recent.length}）· 点🗑删除单条</div>
           <div className="max-h-64 space-y-1.5 overflow-y-auto">
             {s.recent.length === 0 && <div className="text-xs text-slate-400">还没有记录，去对话页问个问题吧</div>}
             {s.recent.map((r, i) => (
               <div key={i} className="rounded-xl bg-white/60 px-3 py-1.5 text-xs">
-                <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex w-full items-center justify-between text-left">
-                  <span className="text-slate-700">💬 {r.q || "（空）"}</span>
-                  <span className="flex items-center gap-1">
-                    <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
-                      {r.hasSource ? "有据" : "无据"}
+                <div className="flex items-center justify-between">
+                  <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex flex-1 items-center justify-between text-left">
+                    <span className="text-slate-700">💬 {r.q || "（空）"}</span>
+                    <span className="flex items-center gap-1">
+                      <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
+                        {r.hasSource ? "有据" : "无据"}
+                      </span>
+                      <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>
                     </span>
-                    <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>
-                  </span>
-                </button>
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const res = await fetch("/api/stats/del", { method: "POST", body: JSON.stringify({ ts: r.ts }) });
+                      setS(await res.json());
+                    }}
+                    className="ml-2 text-red-400 hover:text-red-600"
+                    title="删除这条"
+                  >
+                    🗑
+                  </button>
+                </div>
                 {openIdx === i && (
                   <div className="mt-1.5 whitespace-pre-wrap rounded-lg bg-blue-50/60 p-2 text-[11px] text-slate-600">
-                    {r.a || "（这条没有保存答案，点此重问 →）"}
+                    {r.a || "（这条没有保存答案）"}
                   </div>
                 )}
               </div>

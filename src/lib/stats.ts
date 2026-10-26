@@ -37,6 +37,13 @@ export function clearStats() {
   fs.writeFileSync(FILE, "[]");
 }
 
+export function deleteAt(ts: number) {
+  const all = loadStats();
+  const kept = all.filter((r) => r.ts !== ts);
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(FILE, JSON.stringify(kept));
+}
+
 export function getStats() {
   const all = loadStats();
   const now = new Date();
