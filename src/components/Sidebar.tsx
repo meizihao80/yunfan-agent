@@ -7,10 +7,12 @@ import {
   Database,
   Wrench,
   BookOpen,
+  LayoutDashboard,
 } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "对话助手", icon: MessagesSquare, desc: "RAG 问答 + Agent 调工具" },
+  { href: "/dashboard", label: "运行看板", icon: LayoutDashboard, desc: "系统状态与能力" },
   { href: "/kb", label: "知识库管理", icon: Database, desc: "制度文档与切片" },
   { href: "/tools", label: "MCP 工具广场", icon: Wrench, desc: "可调度的标准化工具" },
 ];
