@@ -58,6 +58,7 @@ export async function ingestSampleDocs(): Promise<{ files: number; chunks: numbe
   for (const f of files) {
     const full = path.join(DOCS_DIR, f);
     const text = await extractText(full);
+    await deleteBySource(f); // 先删该文档旧片段，避免重复
     const pieces = splitText(text);
     await addChunks(pieces.map((text) => ({ text, source: f })));
     total += pieces.length;
