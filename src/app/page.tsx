@@ -39,7 +39,7 @@ const QUICK = [
 ];
 
 export default function Page() {
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, reload } = useChat({
     transport: new DefaultChatTransport({ api: "/api/agent" }),
   });
 
@@ -227,6 +227,13 @@ export default function Page() {
             <div className="flex items-center gap-2 text-sm text-slate-400">
               <Loader2 size={14} className="animate-spin" />
               正在检索知识库并规划执行…
+            </div>
+          )}
+
+          {error && (
+            <div className="msg-in mb-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+              请求出错了：{error.message || "网络或模型服务异常"}
+              <button onClick={() => reload()} className="ml-3 underline">点击重试</button>
             </div>
           )}
         </div>
