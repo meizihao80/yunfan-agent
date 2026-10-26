@@ -9,6 +9,8 @@ export default function DashboardPage() {
   const [s, setS] = useState<{ today: number; month: number; rate: number; recent: any[] }>({ today: 0, month: 0, rate: 0, recent: [] });
   const [showRec, setShowRec] = useState(false);
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [selectMode, setSelectMode] = useState(false);
+  const [picked, setPicked] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetch("/api/ingest")
@@ -56,31 +58,56 @@ export default function DashboardPage() {
 
       {showRec && (
         <div className="glass mt-4 rounded-3xl p-4 shadow">
-          <div className="mb-2 text-sm font-semibold text-slate-700">最近问答记录（{s.recent.length}）· 点🗑删除单条</div>
+          <div className="mb-2 flex items-center justify-between">
+            <div className="text-sm font-semibold text-slate-700">最近问答记录（{s.recent.length}）</div>
+            {!selectMode ? (
+              <button onClick={() => setSelectMode(true)} className="rounded-lg bg-red-50 px-2 py-1 text-xs text-red-600 hover:bg-red-100">删除记录</button>
+            ) : (
+              <div className="flex gap-2">
+                <button
+                  onClick={async () => {
+                    const targets = s.recent.filter((_, i) => picked.has(i));
+                    for (const t of targets) {
+                      await fetch("/api/stats/del", { method: "POST", body: JSON.stringify({ ts: t.ts }) });
+                    }
+                    const res = await fetch("/api/stats");
+                    setS(await res.json());
+                    setPicked(new Set());
+                    setSelectMode(false);
+                  }}
+                  className="rounded-lg bg-red-500 px-2 py-1 text-xs text-white"
+                >
+                  删除选中（{picked.size}）
+                </button>
+                <button onClick={() => { setSelectMode(false); setPicked(new Set()); }} className="rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-600">取消</button>
+              </div>
+            )}
+          </div>
           <div className="max-h-64 space-y-1.5 overflow-y-auto">
             {s.recent.length === 0 && <div className="text-xs text-slate-400">还没有记录，去对话页问个问题吧</div>}
             {s.recent.map((r, i) => (
               <div key={i} className="rounded-xl bg-white/60 px-3 py-1.5 text-xs">
                 <div className="flex items-center justify-between">
-                  <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex flex-1 items-center justify-between text-left">
-                    <span className="text-slate-700">💬 {r.q || "（空）"}</span>
-                    <span className="flex items-center gap-1">
-                      <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
-                        {r.hasSource ? "有据" : "无据"}
+                  {selectMode ? (
+                    <label className="flex flex-1 cursor-pointer items-center gap-2">
+                      <input type="checkbox" checked={picked.has(i)} onChange={() => {
+                        const n = new Set(picked);
+                        n.has(i) ? n.delete(i) : n.add(i);
+                        setPicked(n);
+                      }} />
+                      <span className="text-slate-700">💬 {r.q || "（空）"}</span>
+                    </label>
+                  ) : (
+                    <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex flex-1 items-center justify-between text-left">
+                      <span className="text-slate-700">💬 {r.q || "（空）"}</span>
+                      <span className="flex items-center gap-1">
+                        <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
+                          {r.hasSource ? "有据" : "无据"}
+                        </span>
+                        <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>
                       </span>
-                      <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>
-                    </span>
-                  </button>
-                  <button
-                    onClick={async () => {
-                      const res = await fetch("/api/stats/del", { method: "POST", body: JSON.stringify({ ts: r.ts }) });
-                      setS(await res.json());
-                    }}
-                    className="ml-2 text-red-400 hover:text-red-600"
-                    title="删除这条"
-                  >
-                    🗑
-                  </button>
+                    </button>
+                  )}
                 </div>
                 {openIdx === i && (
                   <div className="mt-1.5 whitespace-pre-wrap rounded-lg bg-blue-50/60 p-2 text-[11px] text-slate-600">
