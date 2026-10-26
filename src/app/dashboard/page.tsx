@@ -65,6 +65,15 @@ export default function DashboardPage() {
             ) : (
               <div className="flex gap-2">
                 <button
+                  onClick={() => {
+                    if (picked.size === s.recent.length) setPicked(new Set());
+                    else setPicked(new Set(s.recent.map((_, i) => i)));
+                  }}
+                  className="rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-600"
+                >
+                  全选
+                </button>
+                <button
                   onClick={async () => {
                     const targets = s.recent.filter((_, i) => picked.has(i));
                     for (const t of targets) {
