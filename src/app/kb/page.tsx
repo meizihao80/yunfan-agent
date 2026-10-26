@@ -139,15 +139,19 @@ export default function KbPage() {
         </div>
         <div className="space-y-2">
           {DOCS.map((d) => (
-            <div key={d.name} className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-white/70 p-3 transition hover:border-blue-200 hover:shadow-md">
-              <FileText size={18} className="mt-0.5 shrink-0 text-blue-500" />
+            <div key={d.name} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/70 p-3 transition hover:border-blue-200 hover:shadow-md">
+              <FileText size={18} className="shrink-0 text-blue-500" />
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium text-slate-800">{d.name}</div>
                 <div className="text-xs text-slate-500">{d.desc}</div>
               </div>
-              <span className="flex items-center gap-1 text-xs text-emerald-600">
-                <CheckCircle2 size={13} /> 已入库
-              </span>
+              <button
+                onClick={() => removeDoc(d.name)}
+                className="rounded-lg p-1.5 text-red-400 transition hover:bg-red-50 hover:text-red-600"
+                title="删除该文档"
+              >
+                <Trash2 size={14} />
+              </button>
             </div>
           ))}
           {extra.map((n) => (
