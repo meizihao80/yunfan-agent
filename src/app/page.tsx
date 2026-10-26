@@ -187,18 +187,20 @@ export default function Page() {
             return (
               <div key={m.id} className={`msg-in mb-3 flex ${isUser ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[88%] ${isUser ? "" : "w-full"}`}>
-                  {/* 工具调用可视化 */}
+                  {/* 工具调用步骤可视化 */}
                   {parts
                     .filter((p) => p.type === "tool-invocation")
                     .map((p, i) => (
                       <div
                         key={i}
-                        className="mb-2 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs text-amber-700"
+                        className="mb-1.5 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/80 px-2.5 py-1 text-xs text-amber-700"
                       >
-                        <Wrench size={12} className="animate-spin" />
-                        调用工具 <code className="font-mono">{p.toolName}</code>
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] text-white">{i + 1}</span>
+                        <Wrench size={12} className={p.state?.status === "result" ? "" : "animate-spin"} />
+                        <span>Agent 调度工具</span>
+                        <code className="rounded bg-amber-100 px-1 font-mono">{p.toolName}</code>
                         {p.state?.status === "result" ? (
-                          <CheckCircle2 size={12} className="text-emerald-500" />
+                          <span className="flex items-center gap-1 text-emerald-600"><CheckCircle2 size={12} />完成</span>
                         ) : (
                           <Loader2 size={12} className="animate-spin" />
                         )}
@@ -216,6 +218,13 @@ export default function Page() {
                     >
                       {textOf(parts)}
                       {busy && !isUser && <span className="cursor" />}
+                    </div>
+                  )}
+
+                  {/* 溯源徽标 */}
+                  {!isUser && textOf(parts) && !busy && /参考来源/.test(textOf(parts)) && (
+                    <div className="mt-1.5 flex items-center gap-1 text-[11px] text-blue-500">
+                      <ShieldCheck size={11} /> 已附制度原文溯源，可展开核对
                     </div>
                   )}
                 </div>
