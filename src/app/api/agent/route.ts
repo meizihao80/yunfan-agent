@@ -1,4 +1,5 @@
 import { runAgent } from "@/lib/agent";
+import { updateAnswer } from "@/lib/stats";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -20,9 +21,6 @@ export async function POST(req: Request) {
     return new Response("empty query", { status: 400 });
   }
   const result = await runAgent(query);
-  // 后台把答案存下来，供记录页直接展示
-  result.text.then((t: string) => {
-    import("@/lib/stats").then((m) => m.updateAnswer(t));
-  }).catch(() => {});
+  result.text.then((t: string) => updateAnswer(t)).catch(() => {});
   return result.toUIMessageStreamResponse();
 }
