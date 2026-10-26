@@ -32,7 +32,10 @@ export function updateAnswer(answer: string) {
   fs.writeFileSync(FILE, JSON.stringify(all));
 }
 
-export function getStats() {
+export function clearStats() {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(FILE, "[]");
+}
   const all = loadStats();
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
