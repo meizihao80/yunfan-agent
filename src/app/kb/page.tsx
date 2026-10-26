@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Database, FileText, RefreshCw, CheckCircle2, ShieldCheck, UploadCloud, FileUp } from "lucide-react";
+import { Database, FileText, RefreshCw, CheckCircle2, ShieldCheck, UploadCloud, FileUp, Trash2 } from "lucide-react";
 
 const DOCS = [
   { name: "01-员工入职管理制度.md", desc: "入职流程、材料、试用期、合同期限" },
@@ -30,6 +30,31 @@ export default function KbPage() {
       const d = await r.json();
       setChunks(d.totalChunks ?? 0);
       alert(`已重新入库：共 ${d.totalChunks ?? 0} 片段`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function clearAll() {
+    if (!confirm("确定清空整个知识库？")) return;
+    setBusy(true);
+    try {
+      await fetch("/api/ingest", { method: "DELETE" });
+      setChunks(0);
+      setExtra([]);
+      alert("已清空");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removeDoc(name: string) {
+    setBusy(true);
+    try {
+      const r = await fetch(`/api/ingest?source=${encodeURIComponent(name)}`, { method: "DELETE" });
+      const d = await r.json();
+      setChunks(d.totalChunks);
+      setExtra((prev) => prev.filter((x) => x !== name));
     } finally {
       setBusy(false);
     }
@@ -95,13 +120,22 @@ export default function KbPage() {
           <div className="flex items-center gap-2 font-semibold text-slate-700">
             <Database size={16} className="text-blue-500" /> 文档清单
           </div>
-          <button
-            onClick={reingest}
-            disabled={busy}
-            className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-1.5 text-xs text-white transition hover:scale-105 disabled:opacity-50"
-          >
-            <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> 重建内置索引
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={clearAll}
+              disabled={busy}
+              className="flex items-center gap-1.5 rounded-xl bg-red-50 px-3 py-1.5 text-xs text-red-600 transition hover:scale-105 hover:bg-red-100 disabled:opacity-50"
+            >
+              <Trash2 size={13} /> 清空知识库
+            </button>
+            <button
+              onClick={reingest}
+              disabled={busy}
+              className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-1.5 text-xs text-white transition hover:scale-105 disabled:opacity-50"
+            >
+              <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> 重建内置索引
+            </button>
+          </div>
         </div>
         <div className="space-y-2">
           {DOCS.map((d) => (
@@ -117,10 +151,16 @@ export default function KbPage() {
             </div>
           ))}
           {extra.map((n) => (
-            <div key={n} className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3">
-              <FileUp size={18} className="mt-0.5 shrink-0 text-emerald-600" />
-              <div className="text-sm font-medium text-slate-800">{n}</div>
-              <span className="ml-auto text-xs text-emerald-600">本次上传</span>
+            <div key={n} className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3">
+              <FileUp size={18} className="shrink-0 text-emerald-600" />
+              <div className="flex-1 text-sm font-medium text-slate-800">{n}</div>
+              <button
+                onClick={() => removeDoc(n)}
+                className="rounded-lg p-1.5 text-red-500 transition hover:bg-red-100"
+                title="删除该文档"
+              >
+                <Trash2 size={14} />
+              </button>
             </div>
           ))}
         </div>

@@ -39,6 +39,23 @@ export async function countChunks(): Promise<number> {
   return (await loadChunks()).length;
 }
 
+// 清空整个知识库
+export async function clearAll() {
+  cache = [];
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(DATA_FILE, "[]", "utf-8");
+}
+
+// 按来源文件名删除该文档的所有片段
+export async function deleteBySource(source: string): Promise<number> {
+  const all = await loadChunks();
+  const kept = all.filter((c) => c.source !== source);
+  const removed = all.length - kept.length;
+  cache = kept;
+  fs.writeFileSync(DATA_FILE, JSON.stringify(kept), "utf-8");
+  return removed;
+}
+
 export async function addChunks(items: { text: string; source: string }[]) {
   if (items.length === 0) return;
   const vectors = await embedTexts(items.map((i) => i.text));
