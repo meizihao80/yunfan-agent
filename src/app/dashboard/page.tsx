@@ -62,15 +62,19 @@ export default function DashboardPage() {
             {s.recent.map((r, i) => (
               <div key={i} className="rounded-xl bg-white/60 px-3 py-1.5 text-xs">
                 <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="flex w-full items-center justify-between text-left">
-                  <span className="text-slate-700">💬 {r.q}</span>
+                  <span className="text-slate-700">💬 {r.q || "（空）"}</span>
                   <span className="flex items-center gap-1">
                     <span className={r.hasSource ? "text-emerald-500" : "text-amber-500"}>
                       {r.hasSource ? "有据" : "无据"}
                     </span>
-                    {r.a && <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>}
+                    <span className="text-slate-400">{openIdx === i ? "▲" : "▼"}</span>
                   </span>
                 </button>
-                {openIdx === i && r.a && <div className="mt-1.5 whitespace-pre-wrap rounded-lg bg-blue-50/60 p-2 text-[11px] text-slate-600">{r.a}</div>}
+                {openIdx === i && (
+                  <div className="mt-1.5 whitespace-pre-wrap rounded-lg bg-blue-50/60 p-2 text-[11px] text-slate-600">
+                    {r.a || "（这条没有保存答案，点此重问 →）"}
+                  </div>
+                )}
               </div>
             ))}
           </div>
