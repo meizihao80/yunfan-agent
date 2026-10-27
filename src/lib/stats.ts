@@ -53,6 +53,6 @@ export function getStats() {
   const month = all.filter((r) => r.ts >= startOfMonth).length;
   const src = all.filter((r) => r.hasSource).length;
   const rate = all.length ? Math.round((src / all.length) * 100) : 0;
-  const recent = [...all].reverse().slice(0, 20);
+  const recent = [...all].reverse();
   return { today, month, rate, total: all.length, recent };
 }
