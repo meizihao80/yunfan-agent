@@ -264,7 +264,7 @@ export default function Page() {
           {error && (
             <div className="msg-in mb-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               请求出错了：{error.message || "网络或模型服务异常"}
-              <button onClick={() => reload()} className="ml-3 underline">点击重试</button>
+              <button onClick={() => window.location.reload()} className="ml-3 underline">点击重试</button>
             </div>
           )}
         </div>
