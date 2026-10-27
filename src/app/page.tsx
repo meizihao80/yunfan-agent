@@ -181,10 +181,10 @@ export default function Page() {
           className="glass h-[56vh] overflow-y-auto rounded-3xl p-4 shadow-lg shadow-blue-100/40"
         >
           {messages.length === 0 && (
-            <div className="mt-6">
-              <div className="mb-4 text-center">
-                <h2 className="text-xl font-bold text-slate-800">你好，企业同事 👋</h2>
-                <p className="mt-1 text-sm text-slate-500">
+            <div className="mt-2">
+              <div className="mb-5 rounded-3xl bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500 p-6 text-white shadow-lg shadow-blue-200">
+                <h2 className="text-2xl font-bold">你好，企业同事 👋</h2>
+                <p className="mt-1 text-sm text-white/90">
                   制度问答、方案建议、生成表单，直接说或点下面的快捷问题
                 </p>
               </div>
