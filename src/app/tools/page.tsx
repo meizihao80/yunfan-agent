@@ -60,9 +60,6 @@ export default function ToolsPage() {
                 <div key={p} className="text-[11px] font-mono text-slate-500">· {p}</div>
               ))}
             </div>
-            <div className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600">
-              <Play size={12} /> 点此试用
-            </div>
           </button>
         ))}
       </div>
