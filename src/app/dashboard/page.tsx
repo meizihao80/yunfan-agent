@@ -6,7 +6,7 @@ import { MessageSquare, MessageCircle, ShieldCheck, AlertCircle, Clock, Upload, 
 export default function DashboardPage() {
   const [chunks, setChunks] = useState<number>(0);
   const [docs, setDocs] = useState(0);
-  const [s, setS] = useState<{ today: number; month: number; rate: number; recent: any[] }>({ today: 0, month: 0, rate: 0, recent: [] });
+  const [s, setS] = useState<{ today: number; month: number; rate: number; total: number; recent: any[] }>({ today: 0, month: 0, rate: 0, total: 0, recent: [] });
   const [showRec, setShowRec] = useState(false);
   const [recTitle, setRecTitle] = useState("今日问答记录");
   const [recFilter, setRecFilter] = useState<"today" | "month">("today");
@@ -31,8 +31,8 @@ export default function DashboardPage() {
   const cards = [
     { label: "今日问答", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", filter: "today" },
     { label: "本月问答", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", filter: "month" },
-    { label: "有依据率", value: s.rate + "%", sub: "点我看记录", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", filter: "cited" },
-    { label: "无依据率", value: 100 - s.rate + "%", sub: "点我看记录", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", filter: "nocite" },
+    { label: "有依据率", value: s.total ? s.rate + "%" : "—", sub: "点我看记录", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", filter: "cited" },
+    { label: "无依据率", value: s.total ? 100 - s.rate + "%" : "—", sub: "点我看记录", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", filter: "nocite" },
     { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
