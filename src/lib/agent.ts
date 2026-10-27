@@ -39,26 +39,13 @@ ${context || "（知识库暂无相关内容）"}
 ${sources}`;
 
   recordAnswer(false, userQuery);
-  const result = streamText({
+  return streamText({
     model: openai.chat("glm-4-flash"),
     system,
     prompt: userQuery,
     tools: buildAiTools(),
-    stopWhen: stepCountIs(3), // 多步工具循环，体现 Agent 规划-执行能力
+    stopWhen: stepCountIs(3),
     temperature: 0.2,
   });
-  // 流式结束后根据回答内容修正 hasSource
-  result.fullText.then((text) => {
-    try {
-      const cited = !text.includes("公司制度暂未明确");
-      const all = loadStats();
-      if (all.length) {
-        all[all.length - 1].hasSource = cited;
-        all[all.length - 1].a = text.slice(0, 500);
-        fs.writeFileSync(FILE, JSON.stringify(all));
-      }
-    } catch {}
-  });
-  return result;
 }
 
