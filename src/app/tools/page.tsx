@@ -44,9 +44,8 @@ export default function ToolsPage() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {TOOLS.map((t) => (
-          <button
+          <div
             key={t.name}
-            onClick={() => tryTool(t.demo)}
             className="group glass w-full rounded-3xl p-4 text-left shadow transition hover:-translate-y-1 hover:shadow-xl"
           >
             <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${t.color} text-white shadow-md transition group-hover:scale-110`}>
@@ -60,7 +59,7 @@ export default function ToolsPage() {
                 <div key={p} className="text-[11px] font-mono text-slate-500">· {p}</div>
               ))}
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
