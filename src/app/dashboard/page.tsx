@@ -31,13 +31,17 @@ export default function DashboardPage() {
   const cards = [
     { label: "今日问答", value: s.today, sub: "点我看记录", icon: MessageSquare, cls: "text-blue-600", bg: "bg-blue-50", filter: "today" },
     { label: "本月问答", value: s.month, sub: "点我看记录", icon: MessageCircle, cls: "text-cyan-600", bg: "bg-cyan-50", filter: "month" },
-    { label: "有依据率", value: s.rate + "%", sub: "回答附制度来源", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "无依据率", value: 100 - s.rate + "%", sub: "制度未明确", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50" },
+    { label: "有依据率", value: s.rate + "%", sub: "点我看记录", icon: ShieldCheck, cls: "text-emerald-600", bg: "bg-emerald-50", filter: "cited" },
+    { label: "无依据率", value: 100 - s.rate + "%", sub: "点我看记录", icon: AlertCircle, cls: "text-amber-600", bg: "bg-amber-50", filter: "nocite" },
     { label: "平均耗时", value: "3.2s", sub: "含检索+生成", icon: Clock, cls: "text-violet-600", bg: "bg-violet-50" },
     { label: "本月上传", value: docs, sub: "去上传制度文档", icon: Upload, cls: "text-rose-600", bg: "bg-rose-50", href: "/kb" },
   ];
 
-  const filtered = s.recent.filter((r) => r.ts >= cutoff);
+  const filtered = s.recent.filter((r) => {
+    if (recFilter === "cited") return r.hasSource;
+    if (recFilter === "nocite") return !r.hasSource;
+    return r.ts >= cutoff;
+  });
 
   return (
     <div className="min-h-[80vh]">
@@ -50,10 +54,14 @@ export default function DashboardPage() {
             key={c.label}
             onClick={() => {
               setShowRec(true); setRecTitle(c.label + "记录"); setRecFilter(c.filter ?? "today");
-              const d = new Date();
-              if (c.filter === "month") { d.setDate(1); d.setHours(0,0,0,0); }
-              else { d.setHours(0,0,0,0); }
-              setCutoff(d.getTime());
+              if (c.filter === "cited" || c.filter === "nocite") {
+                setCutoff(0);
+              } else {
+                const d = new Date();
+                if (c.filter === "month") { d.setDate(1); d.setHours(0,0,0,0); }
+                else { d.setHours(0,0,0,0); }
+                setCutoff(d.getTime());
+              }
             }}
             className="glass block rounded-3xl p-4 text-left shadow transition hover:-translate-y-0.5"
           >
