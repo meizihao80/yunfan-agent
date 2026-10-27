@@ -86,7 +86,7 @@ export async function similaritySearch(query: string, topK = 3): Promise<Chunk[]
   const qv = await embedOne(query);
   return all
     .map((c) => ({ c, score: cosine(qv, c.vector) }))
-    .filter((x) => x.score > 0.32)
+    .filter((x) => x.score > 0.38)
     .sort((a, b) => b.score - a.score)
     .slice(0, topK)
     .map((x) => x.c);
