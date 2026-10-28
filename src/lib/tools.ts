@@ -41,9 +41,9 @@ const generateTodoList: McpToolDef = {
 
 const checkRule: McpToolDef = {
   name: "check_rule",
-  description: "对待校验的人事内容做合规检查，提示对照知识库制度复核",
+  description: "对待校验的人事内容做合规检查，结合知识库制度给出对/错/部分对判断",
   handler: async (args) =>
-    `【制度校验结果】已对以下内容完成合规检查，请对照知识库人事制度复核：\n${args.content}\n（注：如知识库无相关条款，已在回答中标注"制度未明确"。）`,
+    `【制度校验结果】\n待校验内容：${args.content}\n请结合上方知识库制度上下文给出明确判断（对/错/部分对）和依据。`,
 };
 
 export const MCP_TOOLS: McpToolDef[] = [
